@@ -1,0 +1,136 @@
+# CLIProxyAPI 配置文件
+# 官方文档: https://help.router-for.me/
+
+# 服务器绑定地址，默认空字符串绑定所有接口
+host: ""
+
+# 服务器端口
+port: 8317
+
+# TLS HTTPS 配置
+tls:
+  enable: false
+  cert: ""
+  key: ""
+
+# 远程管理 API 配置
+remote-management:
+  # 是否允许非本地主机访问管理 API
+  allow-remote: false
+  # 管理密钥，管理 API 请求需要此密钥
+  secret-key: ""
+  # 是否禁用控制面板
+  disable-control-panel: false
+  # 面板 GitHub 仓库
+  panel-github-repository: "https://github.com/router-for-me/Cli-Proxy-API-Management-Center"
+
+# 认证目录
+auth-dir: "~/.cli-proxy-api"
+
+# API 访问密钥列表，客户端请求时需要提供
+api-keys:
+  - "sk-your-first-api-key-change-this"
+  - "sk-your-second-api-key-change-this"
+
+# 启用调试日志
+debug: false
+
+# Pprof 调试服务器
+pprof:
+  enable: false
+  addr: "127.0.0.1:8316"
+
+# 商业模式：减少高并发下的内存占用
+commercial-mode: false
+
+# 日志写入文件
+logging-to-file: false
+
+# 日志文件最大总大小 (MB)
+logs-max-total-size-mb: 0
+
+# 保留的错误日志文件最大数量
+error-logs-max-files: 10
+
+# 启用使用统计
+usage-statistics-enabled: false
+
+# 代理 URL (支持 socks5/http/https)
+# proxy-url: "socks5://user:pass@192.168.1.1:1080/"
+
+# 强制模型前缀
+force-model-prefix: false
+
+# 转发上游响应头
+passthrough-headers: false
+
+# 请求重试次数
+request-retry: 3
+
+# 单个请求最多尝试的凭据数量
+max-retry-credentials: 0
+
+# 最大重试等待时间（秒）
+max-retry-interval: 30
+
+# 配额超过行为
+quota-exceeded:
+  switch-project: true
+  switch-preview-model: true
+  antigravity-credits: true
+
+# 凭据选择路由策略
+routing:
+  strategy: "round-robin" # round-robin 或 fill-first
+
+# WebSocket API 认证
+ws-auth: false
+
+# 启用 Gemini CLI 内部端点
+enable-gemini-cli-endpoint: false
+
+# 非流式响应保活间隔（秒）
+nonstream-keepalive-interval: 0
+
+# ========================================
+# 提供商配置示例（根据需要取消注释并填写）
+# ========================================
+
+# Gemini API 密钥配置
+# gemini-api-key:
+#   - api-key: "AIzaSy...your-gemini-key..."
+#     prefix: "gemini"
+#     base-url: "https://generativelanguage.googleapis.com"
+
+# Claude API 密钥配置
+# claude-api-key:
+#   - api-key: "sk-ant...your-claude-key..."
+#     prefix: "claude"
+
+# Codex API 密钥配置
+# codex-api-key:
+#   - api-key: "sk-atSM...your-codex-key..."
+#     prefix: "codex"
+
+# OpenAI 兼容提供商（如 OpenRouter）
+# openai-compatibility:
+#   - name: "openrouter"
+#     prefix: "openrouter"
+#     base-url: "https://openrouter.ai/api/v1"
+#     api-key-entries:
+#       - api-key: "sk-or-v1...your-openrouter-key..."
+#     models:
+#       - name: "openai/gpt-4o"
+#         alias: "gpt-4o"
+
+# ========================================
+# Amp CLI 集成配置
+# ========================================
+
+# ampcode:
+#   upstream-url: "https://ampcode.com"
+#   upstream-api-key: ""
+#   model-mappings:
+#     - from: "claude-opus-4-5-20251101"
+#       to: "gemini-2.5-pro"
+
