@@ -1,0 +1,98 @@
+version: '3.4'
+
+services:
+  new-api:
+    image: calciumion/new-api:latest
+    container_name: new-api
+    restart: always
+    command: --log-dir /app/logs
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/data
+      - ./logs:/app/logs
+    environment:
+      # 数据库配置 - 使用 Docker 内部 MySQL
+      SQL_DSN: "newapi:eRFw8MDCRxzaTL3z@tcp(mysql:3306)/newapi?charset=utf8mb4&parseTime=True&loc=Local"
+      
+      # Redis配置
+      REDIS_CONN_STRING: "redis://:newapi_redis_password@redis:6379"
+      
+      # Session密钥
+      SESSION_SECRET: "aUYf8D3eL7mP9sQ2rT5wX1zC4vB6nG8hK1jM3nP5qR7tV9wY1zD2"
+      
+      # 加密密钥
+      CRYPTO_SECRET: "xM5nK2jH8gF4dS1aZ0pO9iU8yT7rE5wQ3eW1qR4tY6"
+      
+      # 时区
+      TZ: Asia/Shanghai
+      
+      # 启用内存缓存
+      MEMORY_CACHE_ENABLED: true
+      
+      # 错误日志记录
+      ERROR_LOG_ENABLED: true
+      
+      # 批量更新
+      BATCH_UPDATE_ENABLED: true
+      
+      # 节点名称
+      NODE_NAME: new-api-node-1
+      
+      # 流式超时
+      STREAMING_TIMEOUT: 300
+
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - new-api-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:3000/api/status | grep -o '\"success\":\\s*true' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  mysql:
+    image: mysql:8.0
+    container_name: new-api-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password_change_this
+      MYSQL_DATABASE: newapi
+      MYSQL_USER: newapi
+      MYSQL_PASSWORD: eRFw8MDCRxzaTL3z
+      TZ: Asia/Shanghai
+    ports:
+      - "3307:3306"  # 映射到宿主机 3307 端口避免冲突
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - new-api-network
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password_change_this"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:latest
+    container_name: new-api-redis
+    restart: always
+    command: ["redis-server", "--requirepass", "newapi_redis_password"]
+    networks:
+      - new-api-network
+    ports:
+      - "6379:6379"
+
+volumes:
+  mysql_data:
+  new-api-data:
+
+networks:
+  new-api-network:
+    driver: bridge
